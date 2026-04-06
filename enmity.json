@@ -1,0 +1,115 @@
+{
+    "name": "ForestDark",
+    "description": "Discord but turned into a deep forest vibe 🌲",
+    "version": "1",
+    "authors": [
+        {
+            "name": "Pana",
+            "id": "89420"
+        }
+    ],
+    "semanticColors": {
+        "ANDROID_RIPPLE": ["#3f4f44"],
+        "CHAT_BACKGROUND": ["#0b0f0c"],
+        "BACKGROUND_ACCENT": ["#6FAF8F"],
+        "BACKGROUND_FLOATING": ["#0a0e0b"],
+        "BACKGROUND_MENTIONED": ["#3f6b4a33"],
+        "BACKGROUND_MENTIONED_HOVER": ["#5FA87A"],
+        "SCROLLBAR_AUTO_TRACK": ["#4f7f62"],
+
+        "CHANNELTEXTAREA_BACKGROUND": ["#101512"],
+        "REDESIGN_ACTIVITY_CARD_BACKGROUND": ["#121813"],
+        "REDESIGN_ACTIVITY_CARD_BACKGROUND_PRESSED": ["#2e3f35"],
+
+        "CHANNELS_DEFAULT": ["#9fb3a5"],
+        "BACKGROUND_MESSAGE_HOVER": ["#26352c"],
+
+        "BACKGROUND_PRIMARY": ["#16211a"],
+        "BACKGROUND_SECONDARY": ["#0f1712"],
+        "BACKGROUND_SECONDARY_ALT": ["#16211a"],
+        "BACKGROUND_TERTIARY": ["#0a0f0c"],
+
+        "HOME_BACKGROUND": ["#18241d"],
+
+        "BORDER_FAINT": ["#2f4236"],
+        "BORDER_STRONG": ["#4e6a5b"],
+
+        "CHANNEL_ICON": ["#a8d5ba"],
+        "EMBED_BACKGROUND": ["#2b3d33"],
+
+        "HEADER_PRIMARY": ["#9FE3C2"],
+        "HEADER_SECONDARY": ["#dff5e9"],
+
+        "INTERACTIVE_MUTED": ["#6f9f86"],
+        "INTERACTIVE_NORMAL": ["#e8f5ee"],
+
+        "MENTION_BACKGROUND": ["#4f8f6a55"],
+        "MENTION_FOREGROUND": ["#d4f5e2"],
+
+        "REDESIGN_BUTTON_SECONDARY_BACKGROUND": ["#1f2a23"],
+        "REDESIGN_BUTTON_DANGER_BACKGROUND": ["#4f7f62"],
+
+        "TEXT_LINK": ["#8fe0b8"],
+        "TEXT_MUTED": ["#8fbfa7"],
+        "TEXT_NORMAL": ["#ecfdf5"],
+        "TEXT_PRIMARY": ["#ecfdf5"],
+        "TEXT_SECONDARY": ["#b7d4c4"],
+
+        "BG_MOD_FAINT": ["#2a3d33"],
+        "KEYBOARD": ["#0f1712"]
+    },
+
+    "rawColors": {
+        "BRAND_200": "#6FAF8F",
+        "BRAND_300": "#66A884",
+        "BRAND_400": "#5F9E7A",
+        "BRAND_500": "#588F70",
+        "BRAND_600": "#4F7F62",
+        "BRAND_700": "#3F6B52",
+
+        "GREEN_260": "#9FE3C2",
+        "GREEN_300": "#8AD9B4",
+        "GREEN_330": "#78CFA6",
+        "GREEN_345": "#6BC79C",
+        "GREEN_360": "#5FBF92",
+        "GREEN_400": "#56B287",
+        "GREEN_430": "#4DA67C",
+        "GREEN_460": "#449A72",
+        "GREEN_500": "#3B8E68",
+        "GREEN_530": "#33825F",
+        "GREEN_560": "#2C7656",
+        "GREEN_600": "#266A4D",
+        "GREEN_630": "#205E44",
+        "GREEN_660": "#1A523B",
+        "GREEN_700": "#144633",
+
+        "PRIMARY_300": "#6FAF8F",
+        "PRIMARY_500": "#5FBF92",
+        "PRIMARY_530": "#4F9F7A",
+
+        "PLUM_13": "#a8d5ba"
+    },
+
+    "background": {
+        "blur": 0.1,
+        "url": "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
+        "OPACITY": 0.15
+    },
+
+    "plus": {
+        "version": "0",
+        "iconPack": "rosiecord-plumpy",
+        "mentionLineColor": "#6FAF8F",
+        "customOverlays": true,
+        "icons": {
+            "trash": "#4f7f62",
+            "TrashIcon": "#4f7f62",
+            "TriangleExclamationPointIcon": "#4f7f62",
+            "toast_copy_link": "#8fe0b8",
+            "toast_copy_message": "#ecfdf5",
+            "toast_image_saved": "#ecfdf5"
+        }
+    },
+
+    "spec": 2
+}
