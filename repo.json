@@ -23,8 +23,8 @@
       "downloadURL": "https://github.com/Nyasami/Ksign/releases/latest/download/ksign.ipa",
       "developerName": "Nyasami",
       "localizedDescription": "Ksign: The best sideloader",
-      "icon": "https://private-user-images.githubusercontent.com/80683081/479763119-986892f9-c32f-448d-a24e-ba8659203fbf.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NzU0NzIwMDcsIm5iZiI6MTc3NTQ3MTcwNywicGF0aCI6Ii84MDY4MzA4MS80Nzk3NjMxMTktOTg2ODkyZjktYzMyZi00NDhkLWEyNGUtYmE4NjU5MjAzZmJmLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjA0MDYlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwNDA2VDEwMzUwN1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPThmYWRhMmVhYTcyMTRjZTA1ODllMGU2YWNkZTcxZWU2MGIyZjBlZTNmNDgxYTJhODMyNjAwN2MwZTIzODk5M2EmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.7O_7xeBOqJPvxIjPN7SkIwHGhzyYL457_ZopuqXLBDE",
-      "iconURL": "https://private-user-images.githubusercontent.com/80683081/479763119-986892f9-c32f-448d-a24e-ba8659203fbf.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NzU0NzIwMDcsIm5iZiI6MTc3NTQ3MTcwNywicGF0aCI6Ii84MDY4MzA4MS80Nzk3NjMxMTktOTg2ODkyZjktYzMyZi00NDhkLWEyNGUtYmE4NjU5MjAzZmJmLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjA0MDYlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwNDA2VDEwMzUwN1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPThmYWRhMmVhYTcyMTRjZTA1ODllMGU2YWNkZTcxZWU2MGIyZjBlZTNmNDgxYTJhODMyNjAwN2MwZTIzODk5M2EmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.7O_7xeBOqJPvxIjPN7SkIwHGhzyYL457_ZopuqXLBDE"
+      "icon": "https://github.com/Panagiotissarr/code/blob/master/ios/assets/app-icns/Ksign.png?raw=true",
+      "iconURL": "https://github.com/Panagiotissarr/code/blob/master/ios/assets/app-icns/Ksign.png?raw=true"
     },
     {
       "name": "Spotify",
@@ -73,6 +73,16 @@
       "localizedDescription": "Amethyst: Minecraft java in your pocker",
       "icon": "https://ipa.cypwn.xyz/serve/icons/Amethyst_1.0.png",
       "iconURL": "https://ipa.cypwn.xyz/serve/icons/Amethyst_1.0.png"
+    }
+  ],
+  "news": [
+    {
+      "title": "Welcome to Pana's sideload repo!",
+      "identifier": "news_l9tszl52po",
+      "caption": "The best repo for ksign",
+      "date": "2026-04-06",
+      "tintColor": "#7c5cfc",
+      "notify": true
     }
   ]
 }
