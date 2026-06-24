@@ -1,0 +1,176 @@
+:root {
+  --base:       #1e1e2e;
+  --surface0:   #313244;
+  --surface1:   #45475a;
+  --overlay0:   #6c7086;
+  --text:       #cdd6f4;
+  --accent:     #4850E0;
+  --accent-glow: rgba(72, 80, 224, 0.4);
+  --font: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: var(--font);
+  background: var(--base);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.noise {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0; opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+body::before {
+  content: '';
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+  animation: pulse 7s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.35; transform: translate(-50%, -50%) scale(1); }
+  50%       { opacity: 0.6;  transform: translate(-50%, -50%) scale(1.1); }
+}
+
+.main {
+  position: relative; z-index: 1;
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+
+.card-scene { width: 100%; max-width: 700px; }
+
+.card {
+  background: rgba(49, 50, 68, 0.45);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 60px 52px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 30px 80px rgba(0,0,0,0.5);
+}
+
+.loading-state { display: flex; justify-content: center; padding: 32px 0; }
+
+.spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--surface1);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.quote-content { display: flex; flex-direction: column; }
+
+.quote-mark {
+  font-size: 4.5rem;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.55;
+  margin-bottom: 4px;
+  font-weight: 300;
+  cursor: pointer;
+  display: inline-block;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  user-select: none;
+}
+
+.quote-mark:hover { opacity: 1; transform: scale(1.12); }
+.quote-mark:active { transform: scale(0.95); }
+
+.quote-mark.spinning {
+  animation: spinMark 0.5s ease infinite;
+  pointer-events: none;
+}
+
+@keyframes spinMark {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(0.8); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+blockquote {
+  font-size: 1.25rem;
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.8;
+  color: var(--text);
+  letter-spacing: 0.01em;
+  margin-bottom: 32px;
+  transition: opacity 0.25s ease;
+}
+
+.divider {
+  width: 40px; height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  margin-bottom: 20px;
+  border-radius: 2px;
+}
+
+cite {
+  font-style: normal;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: opacity 0.25s ease;
+}
+
+.fading blockquote,
+.fading cite { opacity: 0; }
+
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: rgba(49, 50, 68, 0.9);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--overlay0);
+  font-family: var(--font);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  padding: 10px 20px;
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.quote-content:not(.hidden) { animation: fadeUp 0.5s ease forwards; }
+
+.hidden { display: none !important; }
+
+@media (max-width: 560px) {
+  .card { padding: 36px 24px; }
+  blockquote { font-size: 1.05rem; }
+  .quote-mark { font-size: 3rem; }
+}
