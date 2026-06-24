@@ -1,180 +1,2823 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Code - Sarris.dev</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Developer Cheatsheets — Git · Neovim · Tmux</title>
+        <meta
+            name="description"
+            content="Three interactive cheatsheets in one: Git & GitHub CLI, Neovim, and Tmux. Searchable, fast, always free."
+        />
+        <script>
+            try {
+                if (localStorage.getItem("hub-theme") === "light")
+                    document.documentElement.classList.add("preload-light");
+            } catch (e) {}
+        </script>
+        <style>
+            .preload-light body {
+                background: #fff;
+            }
+        </style>
+        <meta name="theme-color" content="#0d1117" id="themeColor" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            rel="preload"
+            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600&display=swap"
+            as="style"
+            onload="
+                this.onload = null;
+                this.rel = 'stylesheet';
+            "
+        />
+        <noscript
+            ><link
+                rel="stylesheet"
+                href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600&display=swap"
+        /></noscript>
+        <link
+            rel="preload"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+            as="style"
+            onload="
+                this.onload = null;
+                this.rel = 'stylesheet';
+            "
+        />
+        <noscript
+            ><link
+                rel="stylesheet"
+                href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        /></noscript>
+        <link rel="stylesheet" href="cheatsheet.css" />
+    </head>
+    <body>
+        <header>
+            <div class="header-row">
+                <h1>CheatSheets</h1>
+                <button
+                    class="theme-toggle"
+                    id="themeToggle"
+                    aria-label="Toggle dark/light mode"
+                >
+                    <span class="material-symbols-outlined">dark_mode</span>
+                </button>
+            </div>
+            <div class="tabs" role="tablist">
+                <button
+                    class="tab active"
+                    data-panel="git"
+                    role="tab"
+                    aria-selected="true"
+                >
+                    <span
+                        class="material-symbols-outlined"
+                        style="
+                            font-size: 16px;
+                            vertical-align: -3px;
+                            margin-right: 3px;
+                        "
+                        >code</span
+                    >
+                    Git<span class="tab-badge git">CLI</span>
+                </button>
+                <button
+                    class="tab"
+                    data-panel="nvim"
+                    role="tab"
+                    aria-selected="false"
+                >
+                    <span
+                        class="material-symbols-outlined"
+                        style="
+                            font-size: 16px;
+                            vertical-align: -3px;
+                            margin-right: 3px;
+                        "
+                        >terminal</span
+                    >
+                    Neovim<span class="tab-badge nvim">IDE</span>
+                </button>
+                <button
+                    class="tab"
+                    data-panel="tmux"
+                    role="tab"
+                    aria-selected="false"
+                >
+                    <span
+                        class="material-symbols-outlined"
+                        style="
+                            font-size: 16px;
+                            vertical-align: -3px;
+                            margin-right: 3px;
+                        "
+                        >grid_view</span
+                    >
+                    Tmux<span class="tab-badge tmux">Term</span>
+                </button>
+            </div>
+        </header>
+        <main>
+            <!-- ── Git Panel ──────────────────────────────────────────────────────── -->
+            <div
+                class="panel panel-git active"
+                data-panel="git"
+                role="tabpanel"
+            >
+                <div class="header-top">
+                    <button
+                        class="branch-btn"
+                        id="branchBtn"
+                        aria-label="Surprise"
+                    >
+                        🌿
+                    </button>
+                    <h1>
+                        <span
+                            class="material-symbols-outlined"
+                            style="
+                                font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+                                vertical-align: -3px;
+                            "
+                            >code</span
+                        >&nbsp;Git &amp; GitHub CLI
+                    </h1>
+                    <button
+                        class="branch-btn"
+                        id="branchBtn2"
+                        aria-label="Surprise"
+                        style="visibility: hidden"
+                    >
+                        🌿
+                    </button>
+                </div>
+                <div class="subtitle">
+                    One-page reference for Git and gh — searchable, forkable,
+                    always free.
+                </div>
 
-<style>
-  * {
-    box-sizing: border-box;
-  }
+                <div class="search-wrap">
+                    <span class="material-symbols-outlined icon-left"
+                        >search</span
+                    >
+                    <input
+                        type="text"
+                        id="gitSearch"
+                        placeholder="Search Git commands…"
+                        aria-label="Search Git commands"
+                        autocomplete="off"
+                    />
+                    <button
+                        class="clear-btn"
+                        id="gitClear"
+                        aria-label="Clear search"
+                    >
+                        ✕
+                    </button>
+                </div>
 
-  body {
-    margin: 0;
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    min-height: 100vh;
+                <div class="cards" id="gitCards">
+                    <!-- Repository Management -->
+                    <div class="card" data-tags="setup">
+                        <div class="card-header">
+                            Repository Management
+                            <span class="tag-label">setup</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="command">git init</span>
+                                    </td>
+                                    <td>Initialize a new Git repository</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git clone &lt;url&gt;</span
+                                        >
+                                    </td>
+                                    <td>Clone a remote repository</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git clone --depth 1
+                                            &lt;url&gt;</span
+                                        >
+                                    </td>
+                                    <td>Shallow clone (faster, no history)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git remote add origin
+                                            &lt;url&gt;</span
+                                        >
+                                    </td>
+                                    <td>Add a remote named 'origin'</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git remote -v</span
+                                        >
+                                    </td>
+                                    <td>List remotes (verbose)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git remote set-url origin
+                                            &lt;url&gt;</span
+                                        >
+                                    </td>
+                                    <td>Change remote URL</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git remote rm &lt;name&gt;</span
+                                        >
+                                    </td>
+                                    <td>Remove a remote</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-    background:
-      radial-gradient(800px 400px at 10% 10%, rgba(56,189,248,0.18), transparent),
-      radial-gradient(800px 400px at 90% 90%, rgba(167,139,250,0.18), transparent);
-  }
+                    <!-- Basic Workflow -->
+                    <div class="card" data-tags="workflow">
+                        <div class="card-header">
+                            Basic Workflow
+                            <span class="tag-label">workflow</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="command">git status</span>
+                                    </td>
+                                    <td>Show working tree status</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git status -s</span
+                                        >
+                                    </td>
+                                    <td>Short status (one line per file)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git add &lt;file&gt;</span
+                                        >
+                                    </td>
+                                    <td>Stage a file</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">git add .</span>
+                                    </td>
+                                    <td>Stage all changes (current dir)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">git add -A</span>
+                                    </td>
+                                    <td>Stage all changes (whole repo)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">git add -p</span>
+                                    </td>
+                                    <td>Interactive staging (hunk-by-hunk)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git commit -m "msg"</span
+                                        >
+                                    </td>
+                                    <td>Commit staged changes with message</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git commit -am "msg"</span
+                                        >
+                                    </td>
+                                    <td>Stage &amp; commit tracked files</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">git diff</span>
+                                    </td>
+                                    <td>Show unstaged changes</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git diff --staged</span
+                                        >
+                                    </td>
+                                    <td>Show staged changes</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">git log</span>
+                                    </td>
+                                    <td>Show commit log</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git log --oneline</span
+                                        >
+                                    </td>
+                                    <td>Compact log (one line per commit)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git log --oneline --graph
+                                            --all</span
+                                        >
+                                    </td>
+                                    <td>Graphical log of all branches</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">git log -p</span>
+                                    </td>
+                                    <td>Log with diffs</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  .container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+                    <!-- Branch & Merge -->
+                    <div class="card" data-tags="branch">
+                        <div class="card-header">
+                            Branch &amp; Merge
+                            <span class="tag-label">branch</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="command">git branch</span>
+                                    </td>
+                                    <td>List local branches</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git branch -a</span
+                                        >
+                                    </td>
+                                    <td>List all branches (local + remote)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git branch &lt;name&gt;</span
+                                        >
+                                    </td>
+                                    <td>Create a new branch</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git branch -d &lt;name&gt;</span
+                                        >
+                                    </td>
+                                    <td>Delete a branch (safe)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git branch -D &lt;name&gt;</span
+                                        >
+                                    </td>
+                                    <td>Force-delete a branch</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git branch -m &lt;old&gt;
+                                            &lt;new&gt;</span
+                                        >
+                                    </td>
+                                    <td>Rename a branch</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git checkout &lt;branch&gt;</span
+                                        >
+                                    </td>
+                                    <td>Switch to a branch</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git checkout -b &lt;name&gt;</span
+                                        >
+                                    </td>
+                                    <td>Create &amp; switch to new branch</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git switch &lt;branch&gt;</span
+                                        >
+                                    </td>
+                                    <td>Switch to a branch (modern)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git switch -c &lt;name&gt;</span
+                                        >
+                                    </td>
+                                    <td>Create &amp; switch (modern)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git merge &lt;branch&gt;</span
+                                        >
+                                    </td>
+                                    <td>Merge branch into current</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git merge --no-ff
+                                            &lt;branch&gt;</span
+                                        >
+                                    </td>
+                                    <td>Merge with no fast-forward</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git rebase &lt;branch&gt;</span
+                                        >
+                                    </td>
+                                    <td>Rebase current onto branch</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git rebase -i HEAD~n</span
+                                        >
+                                    </td>
+                                    <td>Interactive rebase last n commits</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-    background-image: url("https://2.gravatar.com/bg/248931595/156d264684691a181023e71ae7b6240a");
-    background-size: cover;
-    background-position: center;
-    padding: 16px;
-  }
+                    <!-- Remotes & Collaboration -->
+                    <div class="card" data-tags="remote">
+                        <div class="card-header">
+                            Remotes &amp; Collaboration
+                            <span class="tag-label">remote</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="command">git push</span>
+                                    </td>
+                                    <td>Push to default remote</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git push origin
+                                            &lt;branch&gt;</span
+                                        >
+                                    </td>
+                                    <td>Push branch to origin</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git push -u origin
+                                            &lt;branch&gt;</span
+                                        >
+                                    </td>
+                                    <td>Push &amp; set upstream</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git push --force</span
+                                        >
+                                    </td>
+                                    <td>Force push (⚠ overwrites)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git push --force-with-lease</span
+                                        >
+                                    </td>
+                                    <td>Safer force push (checks remote)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git push -d origin
+                                            &lt;branch&gt;</span
+                                        >
+                                    </td>
+                                    <td>Delete remote branch</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">git pull</span>
+                                    </td>
+                                    <td>Fetch &amp; merge (default remote)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git pull --rebase</span
+                                        >
+                                    </td>
+                                    <td>Fetch &amp; rebase instead of merge</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">git fetch</span>
+                                    </td>
+                                    <td>Fetch from remote (no merge)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git fetch --prune</span
+                                        >
+                                    </td>
+                                    <td>Fetch &amp; remove stale refs</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git fetch --all</span
+                                        >
+                                    </td>
+                                    <td>Fetch from all remotes</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git cherry-pick
+                                            &lt;commit&gt;</span
+                                        >
+                                    </td>
+                                    <td>Apply a specific commit to current</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  .card-wrapper {
-    perspective: 1000px;
-  }
+                    <!-- Undo & History -->
+                    <div class="card" data-tags="undo">
+                        <div class="card-header">
+                            Undo &amp; History
+                            <span class="tag-label">undo</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git restore &lt;file&gt;</span
+                                        >
+                                    </td>
+                                    <td>Discard unstaged changes (modern)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git restore --staged
+                                            &lt;file&gt;</span
+                                        >
+                                    </td>
+                                    <td>Unstage a file (modern)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git reset HEAD &lt;file&gt;</span
+                                        >
+                                    </td>
+                                    <td>Unstage a file (classic)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git reset --soft HEAD~1</span
+                                        >
+                                    </td>
+                                    <td>
+                                        Undo last commit, keep changes staged
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git reset --mixed HEAD~1</span
+                                        >
+                                    </td>
+                                    <td>Undo last commit, unstage changes</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git reset --hard HEAD~1</span
+                                        >
+                                    </td>
+                                    <td>
+                                        Undo last commit, discard changes (<b
+                                            >⚠ destructive</b
+                                        >)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git revert &lt;commit&gt;</span
+                                        >
+                                    </td>
+                                    <td>
+                                        Create a new commit undoing the given
+                                        commit (safe for shared history)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git commit --amend</span
+                                        >
+                                    </td>
+                                    <td>
+                                        Edit last commit message or include
+                                        staged changes
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git blame &lt;file&gt;</span
+                                        >
+                                    </td>
+                                    <td>
+                                        Show who changed each line with commit
+                                        info
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  .card {
-    position: relative;
-    width: 360px;
-    border-radius: 16px;
-    overflow: hidden;
+                    <!-- GitHub CLI -->
+                    <div class="card" data-tags="gh">
+                        <div class="card-header">
+                            GitHub CLI <span class="tag-label">gh</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >gh auth login</span
+                                        >
+                                    </td>
+                                    <td>Authenticate gh with GitHub</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >gh repo create &lt;name&gt;</span
+                                        >
+                                    </td>
+                                    <td>Create a new repo on GitHub</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >gh repo clone
+                                            &lt;owner&gt;/&lt;repo&gt;</span
+                                        >
+                                    </td>
+                                    <td>Clone a repo by name</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >gh pr create</span
+                                        >
+                                    </td>
+                                    <td>Create a pull request</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">gh pr list</span>
+                                    </td>
+                                    <td>List open PRs</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >gh pr checkout &lt;num&gt;</span
+                                        >
+                                    </td>
+                                    <td>Checkout a PR locally</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">gh pr view</span>
+                                    </td>
+                                    <td>View PR details in terminal</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >gh issue list</span
+                                        >
+                                    </td>
+                                    <td>List open issues</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >gh issue create</span
+                                        >
+                                    </td>
+                                    <td>Create a new issue</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >gh workflow run &lt;name&gt;</span
+                                        >
+                                    </td>
+                                    <td>Trigger a workflow by name</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">gh run list</span>
+                                    </td>
+                                    <td>List recent workflow runs</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >gh run watch &lt;id&gt;</span
+                                        >
+                                    </td>
+                                    <td>Watch a workflow run live</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >gh run download &lt;id&gt;</span
+                                        >
+                                    </td>
+                                    <td>Download workflow run artifacts</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-    background: rgba(0,0,0,0.9);
-    color: white;
-    text-align: center;
+                    <!-- Stash & Clean -->
+                    <div class="card" data-tags="stash">
+                        <div class="card-header">
+                            Stash &amp; Clean
+                            <span class="tag-label">stash</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="command">git stash</span>
+                                    </td>
+                                    <td>Stash working directory changes</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git stash pop</span
+                                        >
+                                    </td>
+                                    <td>Apply &amp; remove latest stash</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git stash list</span
+                                        >
+                                    </td>
+                                    <td>List all stashes</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git stash apply stash@{n}</span
+                                        >
+                                    </td>
+                                    <td>Apply a specific stash (keep it)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git stash drop stash@{n}</span
+                                        >
+                                    </td>
+                                    <td>Delete a specific stash</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git stash clear</span
+                                        >
+                                    </td>
+                                    <td>Delete all stashes</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git clean -n</span
+                                        >
+                                    </td>
+                                    <td>
+                                        Dry-run: show untracked files to remove
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git clean -fd</span
+                                        >
+                                    </td>
+                                    <td>
+                                        Remove untracked files &amp; directories
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-    box-shadow:
-      0 25px 50px -12px rgba(0,0,0,0.6);
+                    <!-- Config & Aliases -->
+                    <div class="card" data-tags="config">
+                        <div class="card-header">
+                            Config &amp; Aliases
+                            <span class="tag-label">config</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git config --global user.name
+                                            "X"</span
+                                        >
+                                    </td>
+                                    <td>Set global user name</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git config --global user.email
+                                            "x@y"</span
+                                        >
+                                    </td>
+                                    <td>Set global user email</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git config --global
+                                            alias.&lt;name&gt; "cmd"</span
+                                        >
+                                    </td>
+                                    <td>Create a global alias</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git config --global core.editor
+                                            "nvim"</span
+                                        >
+                                    </td>
+                                    <td>Set default editor</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git config --global
+                                            init.defaultBranch main</span
+                                        >
+                                    </td>
+                                    <td>Default branch name to 'main'</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git config --list</span
+                                        >
+                                    </td>
+                                    <td>List all config</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git config --global -e</span
+                                        >
+                                    </td>
+                                    <td>Open global config in editor</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git config --global
+                                            push.autoSetupRemote true</span
+                                        >
+                                    </td>
+                                    <td>
+                                        Auto-set upstream on push (<span
+                                            class="command"
+                                            >git push</span
+                                        >
+                                        without <span class="command">-u</span>)
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-    transform-style: preserve-3d;
-    transition: transform 0.15s ease-out;
-  }
+                    <!-- Advanced Git -->
+                    <div class="card" data-tags="advanced">
+                        <div class="card-header">
+                            Advanced Git <span class="tag-label">advanced</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git bisect start</span
+                                        >
+                                    </td>
+                                    <td>Start binary search for a bug</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git grep "pattern"</span
+                                        >
+                                    </td>
+                                    <td>Search working tree for pattern</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">git tag</span>
+                                    </td>
+                                    <td>List tags</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git tag -a v1.0 -m "msg"</span
+                                        >
+                                    </td>
+                                    <td>Create annotated tag</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git worktree add &lt;path&gt;
+                                            &lt;branch&gt;</span
+                                        >
+                                    </td>
+                                    <td>Create a linked worktree</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git submodule add &lt;url&gt;
+                                            &lt;path&gt;</span
+                                        >
+                                    </td>
+                                    <td>Add a submodule</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git submodule update --init
+                                            --recursive</span
+                                        >
+                                    </td>
+                                    <td>Clone &amp; init all submodules</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >git config --global rerere.enabled
+                                            true</span
+                                        >
+                                    </td>
+                                    <td>
+                                        Reuse recorded resolution of merge
+                                        conflicts
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">git reflog</span>
+                                    </td>
+                                    <td>
+                                        Show reference log (recover lost work)
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  /* shiny overlay (matches Tailwind after:) */
-  .card::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
+                    <div class="back-top">
+                        <button
+                            onclick="
+                                document.querySelector('#gitSearch').focus();
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            "
+                        >
+                            Back to top ↑
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- ── Neovim Panel ────────────────────────────────────────────────────── -->
+            <div class="panel panel-nvim" data-panel="nvim" role="tabpanel">
+                <div class="header-top">
+                    <button
+                        class="penguin-btn"
+                        id="penguinBtn"
+                        aria-label="Surprise"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            width="22"
+                            height="22"
+                            fill="currentColor"
+                        >
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
+                            />
+                        </svg>
+                    </button>
+                    <h1>
+                        <span
+                            class="material-symbols-outlined"
+                            style="
+                                font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+                                vertical-align: -3px;
+                            "
+                            >terminal</span
+                        >&nbsp;Neovim
+                    </h1>
+                    <button
+                        class="penguin-btn"
+                        id="penguinBtn2"
+                        aria-label="Surprise"
+                        style="visibility: hidden"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            width="22"
+                            height="22"
+                            fill="currentColor"
+                        >
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
+                            />
+                        </svg>
+                    </button>
+                </div>
+                <div class="subtitle">
+                    Modal editing reference — Normal, Insert, Visual, &amp;
+                    more.
+                </div>
 
-    background: linear-gradient(
-      120deg,
-      rgba(255,255,255,0.35),
-      rgba(255,255,255,0) 45%
-    );
+                <div class="search-wrap">
+                    <span class="material-symbols-outlined icon-left"
+                        >search</span
+                    >
+                    <input
+                        type="text"
+                        id="nvimSearch"
+                        placeholder="Search Neovim keys…"
+                        aria-label="Search Neovim keys"
+                        autocomplete="off"
+                    />
+                    <button
+                        class="clear-btn"
+                        id="nvimClear"
+                        aria-label="Clear search"
+                    >
+                        ✕
+                    </button>
+                </div>
 
-    opacity: 0;
-    transition: opacity 0.15s ease-out;
-  }
+                <div class="cards" id="nvimCards">
+                    <div class="card" data-tags="motions">
+                        <div class="card-header">
+                            Cursor Movement / Motions
+                            <span class="tag-label">motions</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd>
+                                        <kbd>l</kbd>
+                                    </td>
+                                    <td>← ↓ ↑ →</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>w</kbd> / <kbd>b</kbd></td>
+                                    <td>Next / previous word start</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>e</kbd> / <kbd>ge</kbd></td>
+                                    <td>Next / previous word end</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>W</kbd> / <kbd>B</kbd></td>
+                                    <td>Next / previous WORD (non-blank)</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>0</kbd></td>
+                                    <td>Go to line beginning</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>$</kbd></td>
+                                    <td>Go to line end</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>^</kbd></td>
+                                    <td>Go to first non-whitespace of line</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>_</kbd></td>
+                                    <td>
+                                        Go to first non-whitespace of line
+                                        (count-1 lines down)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>gg</kbd></td>
+                                    <td>Go to first line</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>G</kbd></td>
+                                    <td>Go to last line</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <kbd>H</kbd> / <kbd>M</kbd> /
+                                        <kbd>L</kbd>
+                                    </td>
+                                    <td>Top / Middle / Bottom of screen</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>%</kbd></td>
+                                    <td>Jump to matching bracket</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>f</kbd><kbd>x</kbd></td>
+                                    <td>
+                                        Forward to next occurrence of
+                                        <kbd>x</kbd> on line
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>F</kbd><kbd>x</kbd></td>
+                                    <td>
+                                        Backward to previous occurrence of
+                                        <kbd>x</kbd>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>t</kbd><kbd>x</kbd></td>
+                                    <td>
+                                        Forward until just before <kbd>x</kbd>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>T</kbd><kbd>x</kbd></td>
+                                    <td>
+                                        Backward until just after <kbd>x</kbd>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>;</kbd> / <kbd>,</kbd></td>
+                                    <td>
+                                        Repeat last f/t in same / opposite
+                                        direction
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>}</kbd> / <kbd>{</kbd></td>
+                                    <td>
+                                        Next / previous empty line (paragraph
+                                        jump)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <kbd>ctrl-d</kbd> / <kbd>ctrl-u</kbd>
+                                    </td>
+                                    <td>Scroll down / up half page</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <kbd>ctrl-f</kbd> / <kbd>ctrl-b</kbd>
+                                    </td>
+                                    <td>Page down / up</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <kbd>zz</kbd> / <kbd>zt</kbd> /
+                                        <kbd>zb</kbd>
+                                    </td>
+                                    <td>
+                                        Center / Top / Bottom of cursor on
+                                        screen
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  .card:hover::after {
-    opacity: 1;
-  }
+                    <div class="card" data-tags="editing">
+                        <div class="card-header">
+                            Editing — Insert / Change / Delete / Yank / Paste
+                            <span class="tag-label">editing</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td><kbd>i</kbd> / <kbd>a</kbd></td>
+                                    <td>Insert before / after cursor</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>I</kbd> / <kbd>A</kbd></td>
+                                    <td>Insert at line start / end</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>o</kbd> / <kbd>O</kbd></td>
+                                    <td>Open new line below / above</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>s</kbd> / <kbd>S</kbd></td>
+                                    <td>
+                                        Delete char / line and enter Insert mode
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>c</kbd> + motion</td>
+                                    <td>
+                                        Change (delete + insert) — e.g.
+                                        <kbd>cw</kbd>, <kbd>ciw</kbd>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>cc</kbd> / <kbd>C</kbd></td>
+                                    <td>
+                                        Change whole line / change to line end
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>d</kbd> + motion</td>
+                                    <td>
+                                        Delete — e.g. <kbd>dw</kbd>,
+                                        <kbd>diw</kbd>, <kbd>d$</kbd>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>dd</kbd> / <kbd>D</kbd></td>
+                                    <td>
+                                        Delete whole line / delete to line end
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>x</kbd> / <kbd>X</kbd></td>
+                                    <td>
+                                        Delete (cut) char under / before cursor
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>y</kbd> + motion</td>
+                                    <td>
+                                        Yank (copy) — e.g. <kbd>yw</kbd>,
+                                        <kbd>yiw</kbd>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>yy</kbd> / <kbd>Y</kbd></td>
+                                    <td>
+                                        Yank whole line / yank to end of line
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>p</kbd> / <kbd>P</kbd></td>
+                                    <td>Paste after / before cursor</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>gp</kbd> / <kbd>gP</kbd></td>
+                                    <td>
+                                        Paste and leave cursor after pasted text
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>r</kbd></td>
+                                    <td>Replace single character</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>R</kbd></td>
+                                    <td>Enter Replace (overwrite) mode</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>.</kbd></td>
+                                    <td>Repeat last change</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>u</kbd> / <kbd>ctrl-r</kbd></td>
+                                    <td>Undo / Redo</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>g;</kbd> / <kbd>g,</kbd></td>
+                                    <td>
+                                        Jump to older / newer change position
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  .content {
-    position: relative;
-    padding: 40px 24px;
-  }
+                    <div class="card" data-tags="visual">
+                        <div class="card-header">
+                            Visual Mode <span class="tag-label">visual</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td><kbd>v</kbd></td>
+                                    <td>Enter Visual (character-wise)</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>V</kbd></td>
+                                    <td>Enter Visual (line-wise)</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ctrl-v</kbd></td>
+                                    <td>Enter Visual (block-wise)</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>o</kbd></td>
+                                    <td>Jump to opposite end of selection</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>aw</kbd> / <kbd>iw</kbd></td>
+                                    <td>Select a / inner word</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>a(</kbd> / <kbd>i(</kbd></td>
+                                    <td>Select around / inside parentheses</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>a{</kbd> / <kbd>i{</kbd></td>
+                                    <td>Select around / inside curly braces</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>a[</kbd> / <kbd>i[</kbd></td>
+                                    <td>Select around / inside brackets</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>a&lt;</kbd> / <kbd>i&lt;</kbd></td>
+                                    <td>
+                                        Select around / inside angle brackets
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>a"</kbd> / <kbd>i"</kbd></td>
+                                    <td>
+                                        Select around / inside double quotes
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>a'</kbd> / <kbd>i'</kbd></td>
+                                    <td>
+                                        Select around / inside single quotes
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>a`</kbd> / <kbd>i`</kbd></td>
+                                    <td>Select around / inside backticks</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>at</kbd> / <kbd>it</kbd></td>
+                                    <td>Select around / inside HTML tag</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>gv</kbd></td>
+                                    <td>Reselect last selection</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>&gt;</kbd> / <kbd>&lt;</kbd></td>
+                                    <td>Indent / Dedent selection</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <kbd>~</kbd> / <kbd>u</kbd> /
+                                        <kbd>U</kbd>
+                                    </td>
+                                    <td>Toggle / lowercase / UPPERCASE</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  .title {
-    font-size: 96px;
-    font-weight: 800;
-    line-height: 1;
-    margin: 0;
+                    <div class="card" data-tags="search">
+                        <div class="card-header">
+                            Search &amp; Replace
+                            <span class="tag-label">search</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td><kbd>/pattern</kbd></td>
+                                    <td>Search forward for pattern</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>?pattern</kbd></td>
+                                    <td>Search backward for pattern</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>n</kbd> / <kbd>N</kbd></td>
+                                    <td>Next / previous match</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>*</kbd> / <kbd>#</kbd></td>
+                                    <td>
+                                        Search forward / backward for word under
+                                        cursor
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:%s/old/new/g</kbd></td>
+                                    <td>
+                                        Replace all <code>old</code> with
+                                        <code>new</code> in file
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:%s/old/new/gc</kbd></td>
+                                    <td>Replace with confirmation per match</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:%s/old/new/gi</kbd></td>
+                                    <td>Case-insensitive replace all</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:'&lt;,'&gt;s/old/new/g</kbd></td>
+                                    <td>Replace in visual selection</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>g&amp;</kbd></td>
+                                    <td>
+                                        Repeat last <code>:s</code> across all
+                                        lines
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>nohlsearch</kbd></td>
+                                    <td>
+                                        Remove search highlighting (can also
+                                        <code>:noh</code>)
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-    background-image: url("https://panagiotis2211.wordpress.com/wp-content/uploads/2026/01/lock-screen.jpg");
-    background-size: cover;
-    background-position: center;
+                    <div class="card" data-tags="files">
+                        <div class="card-header">
+                            Files &amp; Buffers
+                            <span class="tag-label">files</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td><kbd>:e &lt;file&gt;</kbd></td>
+                                    <td>Edit (open) a file</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:w</kbd></td>
+                                    <td>Save</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:wq</kbd> / <kbd>x</kbd></td>
+                                    <td>Save &amp; quit</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:q!</kbd></td>
+                                    <td>Quit without saving</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:w !sudo tee %</kbd></td>
+                                    <td>Save a read-only file with sudo</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ctrl-^</kbd></td>
+                                    <td>Toggle to alternate file</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:ls</kbd></td>
+                                    <td>List buffers</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:bn</kbd> / <kbd>:bp</kbd></td>
+                                    <td>Next / previous buffer</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:bd</kbd></td>
+                                    <td>Delete (unload) a buffer</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:bufdo bd</kbd></td>
+                                    <td>
+                                        Close all buffers (if modified, add
+                                        <code>!</code>)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:ene</kbd></td>
+                                    <td>Open a new (empty) buffer</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:Ex</kbd></td>
+                                    <td>Open file explorer (netrw)</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>gf</kbd></td>
+                                    <td>Open file under cursor</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ctrl-w f</kbd></td>
+                                    <td>
+                                        Open file under cursor in a new split
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
+                    <div class="card" data-tags="windows">
+                        <div class="card-header">
+                            Windows &amp; Splits
+                            <span class="tag-label">windows</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td><kbd>ctrl-w v</kbd></td>
+                                    <td>Vertical split</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ctrl-w s</kbd></td>
+                                    <td>Horizontal split</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ctrl-w h/j/k/l</kbd></td>
+                                    <td>Navigate splits</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ctrl-w w</kbd></td>
+                                    <td>Cycle through windows</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ctrl-w q</kbd></td>
+                                    <td>Close current window</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ctrl-w =</kbd></td>
+                                    <td>Equalize sizes</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ctrl-w _</kbd></td>
+                                    <td>Maximize height</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ctrl-w |</kbd></td>
+                                    <td>Maximize width</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ctrl-w H/J/K/L</kbd></td>
+                                    <td>Move window to far side</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:sp &lt;file&gt;</kbd></td>
+                                    <td>Open file in horizontal split</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:vs &lt;file&gt;</kbd></td>
+                                    <td>Open file in vertical split</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  .subtitle {
-    margin-top: 8px;
-    font-size: 14px;
-    color: rgb(212,212,216); /* zinc-300 */
-  }
+                    <div class="card" data-tags="tabs">
+                        <div class="card-header">
+                            Tabs <span class="tag-label">tabs</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td><kbd>:tabnew</kbd></td>
+                                    <td>Open new tab</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>gt</kbd> / <kbd>gT</kbd></td>
+                                    <td>Next / previous tab</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>i_gt</kbd> / <kbd>i_gT</kbd></td>
+                                    <td>Next / previous tab (insert mode)</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>{count}gt</kbd></td>
+                                    <td>
+                                        Go to tab number <code>{count}</code>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:tabedit &lt;file&gt;</kbd></td>
+                                    <td>Open file in new tab</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:tabclose</kbd></td>
+                                    <td>Close current tab</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:tabm {n}</kbd></td>
+                                    <td>
+                                        Move tab to position
+                                        <code>n</code> (0-based)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:tab split</kbd></td>
+                                    <td>Move current buffer to new tab</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:tabs</kbd></td>
+                                    <td>List all tabs</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-.button {
-  margin-top: 24px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+                    <div class="card" data-tags="marks">
+                        <div class="card-header">
+                            Marks &amp; Jumps
+                            <span class="tag-label">marks</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td><kbd>m{a-z}</kbd></td>
+                                    <td>Set local mark</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>m{A-Z}</kbd></td>
+                                    <td>Set global (file) mark</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>`{a-z}</kbd></td>
+                                    <td>Jump to local mark</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>`{A-Z}</kbd></td>
+                                    <td>Jump to global mark</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>``</kbd></td>
+                                    <td>Jump back to previous position</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>``.</kbd></td>
+                                    <td>Jump to last changed position</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:marks</kbd></td>
+                                    <td>List all marks</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <kbd>ctrl-o</kbd> / <kbd>ctrl-i</kbd>
+                                    </td>
+                                    <td>
+                                        Jump to older / newer cursor position
+                                        (jump list)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>g;</kbd> / <kbd>g,</kbd></td>
+                                    <td>
+                                        Jump to older / newer change in change
+                                        list
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:changes</kbd></td>
+                                    <td>Show change list</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:jumps</kbd></td>
+                                    <td>Show jump list</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  padding: 8px 16px;
-  font-size: 12px;
-  font-weight: 600;
+                    <div class="card" data-tags="registers">
+                        <div class="card-header">
+                            Registers <span class="tag-label">registers</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td><kbd>"</kbd> (unnamed)</td>
+                                    <td>Last yank/delete</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>"0</kbd> (yank)</td>
+                                    <td>Last yank</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>"1</kbd> - <kbd>"9</kbd></td>
+                                    <td>Delete history (1=last, 9=oldest)</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>"a</kbd> - <kbd>"z</kbd></td>
+                                    <td>Named registers</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>"+</kbd></td>
+                                    <td>System clipboard</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>"*</kbd></td>
+                                    <td>Primary selection (X11)</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>"=</kbd></td>
+                                    <td>Expression register (calculator)</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>"_</kbd> (black hole)</td>
+                                    <td>Delete without affecting registers</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>".</kbd></td>
+                                    <td>Last inserted text</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>":</kbd></td>
+                                    <td>Last command-line</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>"/</kbd></td>
+                                    <td>Last search pattern</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:reg</kbd></td>
+                                    <td>List all registers</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:reg "0</kbd></td>
+                                    <td>Show specific register</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  border-radius: 9999px;
-  text-decoration: none;
+                    <div class="card" data-tags="folding">
+                        <div class="card-header">
+                            Folding <span class="tag-label">folding</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td><kbd>za</kbd></td>
+                                    <td>Toggle fold under cursor</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>zA</kbd></td>
+                                    <td>Toggle fold recursively</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>zo</kbd> / <kbd>zc</kbd></td>
+                                    <td>Open / Close one fold</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>zO</kbd> / <kbd>zC</kbd></td>
+                                    <td>Open / Close all folds recursively</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>zM</kbd> / <kbd>zR</kbd></td>
+                                    <td>Close all / Open all folds</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>zf</kbd> + motion</td>
+                                    <td>Create fold</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>zd</kbd> / <kbd>zD</kbd></td>
+                                    <td>Delete one / all folds at cursor</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>zE</kbd></td>
+                                    <td>Delete all folds in window</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>zk</kbd> / <kbd>zj</kbd></td>
+                                    <td>Move to prev / next fold</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  background: #4850E0;
-  color: white;
+                    <div class="card" data-tags="macros">
+                        <div class="card-header">
+                            Macros <span class="tag-label">macros</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td><kbd>q{a-z}</kbd></td>
+                                    <td>Start recording macro into register</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>q{A-Z}</kbd></td>
+                                    <td>Append to macro register</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>q</kbd></td>
+                                    <td>Stop recording</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>@{a-z}</kbd></td>
+                                    <td>Execute macro from register</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>@@</kbd></td>
+                                    <td>Repeat last macro</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:{range}norm @{a-z}</kbd></td>
+                                    <td>Execute macro on multiple lines</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  box-shadow: 0 10px 25px rgba(72, 80, 224, 0.4);
+                    <div class="card" data-tags="misc">
+                        <div class="card-header">
+                            Miscellaneous <span class="tag-label">misc</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <kbd>:help &lt;topic&gt;</kbd> /
+                                        <kbd>&lt;F1&gt;</kbd>
+                                    </td>
+                                    <td>Open help for topic / general help</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ctrl-]</kbd></td>
+                                    <td>Jump to tag under cursor (in help)</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ctrl-t</kbd></td>
+                                    <td>Jump back from tag</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>K</kbd></td>
+                                    <td>
+                                        Look up keyword under cursor via
+                                        <code>:help</code>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <kbd>&lt;Esc&gt;</kbd> /
+                                        <kbd>ctrl-[</kbd>
+                                    </td>
+                                    <td>Go to Normal mode</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ga</kbd></td>
+                                    <td>Show hex value and character info</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>g ctrl-g</kbd></td>
+                                    <td>Show word/line/char count</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ZQ</kbd></td>
+                                    <td>
+                                        Quit without saving (same as
+                                        <code>:q!</code>)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>ZZ</kbd></td>
+                                    <td>
+                                        Save &amp; quit (same as
+                                        <code>:wq</code>)
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  transition: all 0.2s ease;
-}
+                    <div class="card" data-tags="plugins">
+                        <div class="card-header">
+                            Plugins <span class="tag-label">plugins</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >:Telescope find_files</span
+                                        >
+                                    </td>
+                                    <td>Find files (Telescope)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >:Telescope live_grep</span
+                                        >
+                                    </td>
+                                    <td>Grep across project (Telescope)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >:Telescope buffers</span
+                                        >
+                                    </td>
+                                    <td>List buffers (Telescope)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >:Telescope help_tags</span
+                                        >
+                                    </td>
+                                    <td>Search help (Telescope)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >:NvimTreeToggle</span
+                                        >
+                                    </td>
+                                    <td>Toggle file tree</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >:NvimTreeFindFile</span
+                                        >
+                                    </td>
+                                    <td>Reveal current file in tree</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">:LspInfo</span>
+                                    </td>
+                                    <td>LSP status info</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="command">gd</span></td>
+                                    <td>Go to definition (LSP)</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="command">gr</span></td>
+                                    <td>Go to references (LSP)</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="command">K</span></td>
+                                    <td>Hover documentation (LSP)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">[d / ]d</span>
+                                    </td>
+                                    <td>Next / previous diagnostic (LSP)</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">:LspRestart</span>
+                                    </td>
+                                    <td>Restart LSP client</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="command">:Mason</span></td>
+                                    <td>LSP/DAP installer manager</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >:CopilotChatToggle</span
+                                        >
+                                    </td>
+                                    <td>Toggle Copilot Chat panel</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-.button:hover {
-  background: #3b42c7; /* slightly darker for hover */
-}
-</style>
-</head>
-<body>
+                    <div class="card" data-tags="plugins">
+                        <div class="card-header">
+                            Plugin — Editor Enhancements
+                            <span class="tag-label">plugins</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >:IlluminatePause</span
+                                        >
+                                        /
+                                        <span class="command"
+                                            >:IlluminateResume</span
+                                        >
+                                    </td>
+                                    <td>Pause / resume vim-illuminate</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">[[ / ]]</span>
+                                    </td>
+                                    <td>
+                                        Prev / next function
+                                        (Treesitter-textobjects)
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-<div class="container">
-  <div class="card-wrapper">
-    <div class="card" id="card">
-      <div class="content">
-        <h1 class="title">Code</h1>
-        <p class="subtitle">This website is used for file hosting/sharing</p>
-        <a href="https://www.sarris.dev/" class="button">Go home</a>
-      </div>
-    </div>
-  </div>
-</div>
+                    <div class="card" data-tags="settings">
+                        <div class="card-header">
+                            Useful Settings
+                            <span class="tag-label">settings</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <kbd>:set number</kbd> /
+                                        <kbd>:set nonumber</kbd>
+                                    </td>
+                                    <td>Show / hide line numbers</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:set relativenumber</kbd></td>
+                                    <td>Relative line numbers</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <kbd>:set hlsearch</kbd> /
+                                        <kbd>:set nohlsearch</kbd>
+                                    </td>
+                                    <td>
+                                        Enable / disable search highlighting
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <kbd>:set ignorecase</kbd> /
+                                        <kbd>:set smartcase</kbd>
+                                    </td>
+                                    <td>
+                                        Case-insensitive / smart case search
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:set tabstop=4</kbd></td>
+                                    <td>Set tab width to 4 spaces</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:set shiftwidth=4</kbd></td>
+                                    <td>Set indent width to 4</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:set expandtab</kbd></td>
+                                    <td>Use spaces instead of tabs</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:set list</kbd></td>
+                                    <td>
+                                        Show hidden characters (tab, eol, trail)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:set nowrap</kbd></td>
+                                    <td>Disable line wrapping</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:set cursorline</kbd></td>
+                                    <td>Highlight current line</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:set spell</kbd></td>
+                                    <td>Enable spell check</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:set mouse=a</kbd></td>
+                                    <td>Enable mouse support</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <kbd>:set clipboard=unnamedplus</kbd>
+                                    </td>
+                                    <td>Use system clipboard by default</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>:set undofile</kbd></td>
+                                    <td>Persistent undo across sessions</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-<script>
-  const card = document.getElementById("card");
+                    <div class="back-top">
+                        <button
+                            onclick="
+                                document.querySelector('#nvimSearch').focus();
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            "
+                        >
+                            Back to top ↑
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- ── Tmux Panel ──────────────────────────────────────────────────────── -->
+            <div class="panel panel-tmux" data-panel="tmux" role="tabpanel">
+                <h1 style="text-align: center; margin-top: 24px">
+                    <span
+                        class="material-symbols-outlined"
+                        style="
+                            font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+                            vertical-align: -3px;
+                        "
+                        >grid_view</span
+                    >&nbsp;Tmux
+                </h1>
+                <div class="subtitle">
+                    Terminal multiplexer — sessions, windows, panes &amp; more.
+                </div>
 
-  let currentX = 0;
-  let currentY = 0;
+                <div class="search-wrap">
+                    <span class="material-symbols-outlined icon-left"
+                        >search</span
+                    >
+                    <input
+                        type="text"
+                        id="tmuxSearch"
+                        placeholder="Search Tmux commands…"
+                        aria-label="Search Tmux commands"
+                        autocomplete="off"
+                    />
+                    <button
+                        class="clear-btn"
+                        id="tmuxClear"
+                        aria-label="Clear search"
+                    >
+                        ✕
+                    </button>
+                </div>
 
-  card.addEventListener("mousemove", (e) => {
-    const rect = card.getBoundingClientRect();
+                <div class="cards" id="tmuxCards">
+                    <div class="card" data-tags="session">
+                        <div class="card-header">
+                            Session Management
+                            <span class="tag-label">session</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux new -s &lt;name&gt;</span
+                                        >
+                                    </td>
+                                    <td>Create a new named session</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux new -s &lt;name&gt; -d</span
+                                        >
+                                    </td>
+                                    <td>
+                                        Create session detached (background)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command">tmux ls</span>
+                                    </td>
+                                    <td>List all sessions</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="command">tmux a</span></td>
+                                    <td>Attach to last session</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux a -t &lt;name&gt;</span
+                                        >
+                                    </td>
+                                    <td>Attach to named session</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux kill-session -t
+                                            &lt;name&gt;</span
+                                        >
+                                    </td>
+                                    <td>Kill a session</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux kill-session -a</span
+                                        >
+                                    </td>
+                                    <td>Kill all sessions but current</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux switch -t &lt;name&gt;</span
+                                        >
+                                    </td>
+                                    <td>Switch to another session</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux rename-session -t &lt;old&gt;
+                                            &lt;new&gt;</span
+                                        >
+                                    </td>
+                                    <td>Rename a session</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+                    <div class="card" data-tags="window">
+                        <div class="card-header">
+                            Window Management
+                            <span class="tag-label">window</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td><kbd>Prefix + c</kbd></td>
+                                    <td>Create a new window</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + ,</kbd></td>
+                                    <td>Rename current window</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + &amp;</kbd></td>
+                                    <td>Kill current window</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + w</kbd></td>
+                                    <td>List / navigate windows</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <kbd>Prefix + p</kbd> /
+                                        <kbd>Prefix + n</kbd>
+                                    </td>
+                                    <td>Previous / next window</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + &lt;number&gt;</kbd></td>
+                                    <td>Go to window by number</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + l</kbd></td>
+                                    <td>Go to last active window</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + f</kbd></td>
+                                    <td>Find window by name</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + .</kbd></td>
+                                    <td>Move window (change index)</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + ,</kbd></td>
+                                    <td>Set window title</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
+                    <div class="card" data-tags="pane">
+                        <div class="card-header">
+                            Pane Management <span class="tag-label">pane</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td><kbd>Prefix + %</kbd></td>
+                                    <td>Split pane vertically</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + "</kbd></td>
+                                    <td>Split pane horizontally</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + o</kbd></td>
+                                    <td>Cycle through panes</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + ;</kbd></td>
+                                    <td>Go to last active pane</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + x</kbd></td>
+                                    <td>Kill current pane</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + q</kbd></td>
+                                    <td>Show pane numbers</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + z</kbd></td>
+                                    <td>Toggle full-screen zoom for pane</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + !</kbd></td>
+                                    <td>Convert pane into its own window</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <kbd>Prefix + {</kbd> /
+                                        <kbd>Prefix + }</kbd>
+                                    </td>
+                                    <td>Swap pane left / right (up / down)</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + ctrl-o</kbd></td>
+                                    <td>Rotate pane positions forward</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + Space</kbd></td>
+                                    <td>Cycle through pane layouts</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + M-1 .. M-5</kbd></td>
+                                    <td>
+                                        Select preset layout (even-h, even-v,
+                                        main-h, main-v, tiled)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <kbd>Prefix + M-Up/Down/Left/Right</kbd>
+                                    </td>
+                                    <td>Resize pane by 5 cells</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <kbd
+                                            >Prefix +
+                                            ctrl-Up/Down/Left/Right</kbd
+                                        >
+                                    </td>
+                                    <td>Resize pane by 1 cell</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-    const maxTilt = 8;
+                    <div class="card" data-tags="copy">
+                        <div class="card-header">
+                            Copy Mode &amp; Scrolling
+                            <span class="tag-label">copy</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td><kbd>Prefix + [</kbd></td>
+                                    <td>Enter copy mode (scroll)</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + ]</kbd></td>
+                                    <td>Paste from buffer</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + PgUp</kbd></td>
+                                    <td>
+                                        Enter copy mode and scroll up one page
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>q</kbd></td>
+                                    <td>Exit copy mode</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Space</kbd> / <kbd>Enter</kbd></td>
+                                    <td>
+                                        Start selection / copy selection (in
+                                        copy mode)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>{vim-like</kbd></td>
+                                    <td>
+                                        Vim motions work in copy mode (if vi
+                                        mode enabled)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + #</kbd></td>
+                                    <td>List all paste buffers</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + =</kbd></td>
+                                    <td>
+                                        Show paste buffer history and choose
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-    const rotateX = ((x - centerX) / centerX) * maxTilt;
-    const rotateY = -((y - centerY) / centerY) * maxTilt;
+                    <div class="card" data-tags="config">
+                        <div class="card-header">
+                            Configuration &amp; Customization
+                            <span class="tag-label">config</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >~/.tmux.conf</span
+                                        >
+                                    </td>
+                                    <td>Main tmux config file</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + :</kbd></td>
+                                    <td>Enter command prompt</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + r</kbd></td>
+                                    <td>
+                                        Reload config (<code
+                                            >source-file ~/.tmux.conf</code
+                                        >)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + d</kbd></td>
+                                    <td>Detach from session</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + t</kbd></td>
+                                    <td>Show clock in pane</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + ?</kbd></td>
+                                    <td>Show all keybindings</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Prefix + ~</kbd></td>
+                                    <td>Show tmux message log</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-    currentX = rotateX;
-    currentY = rotateY;
+                    <div class="card" data-tags="options">
+                        <div class="card-header">
+                            Global Options
+                            <span class="tag-label">options</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-wrap">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <span class="command"
+                                                >set -g mouse on</span
+                                            >
+                                        </td>
+                                        <td>Enable mouse mode</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="command"
+                                                >set -g default-terminal
+                                                "screen-256color"</span
+                                            >
+                                        </td>
+                                        <td>Set 256-color terminal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="command"
+                                                >set -g terminal-overrides
+                                                ',xterm-256color:Tc'</span
+                                            >
+                                        </td>
+                                        <td>Enable true color (24-bit)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="command"
+                                                >set -g status-bg
+                                                colour235</span
+                                            >
+                                        </td>
+                                        <td>Set status bar background color</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="command"
+                                                >set -g status-fg white</span
+                                            >
+                                        </td>
+                                        <td>Set status bar foreground color</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="command"
+                                                >set -g status-interval 5</span
+                                            >
+                                        </td>
+                                        <td>
+                                            Update status bar every 5 seconds
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="command"
+                                                >set -g history-limit
+                                                50000</span
+                                            >
+                                        </td>
+                                        <td>Increase scrollback buffer</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="command"
+                                                >set -g prefix C-a</span
+                                            >
+                                        </td>
+                                        <td>Change prefix to Ctrl-a</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="command"
+                                                >set -g base-index 1</span
+                                            >
+                                        </td>
+                                        <td>Start window numbering at 1</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="command"
+                                                >set -g pane-base-index 1</span
+                                            >
+                                        </td>
+                                        <td>Start pane numbering at 1</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="command"
+                                                >setw -g mode-keys vi</span
+                                            >
+                                        </td>
+                                        <td>Vi mode for copy mode</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="command"
+                                                >setw -g monitor-activity
+                                                on</span
+                                            >
+                                        </td>
+                                        <td>
+                                            Monitor for activity in other
+                                            windows
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="command"
+                                                >set -g visual-activity on</span
+                                            >
+                                        </td>
+                                        <td>Show activity notification</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="command"
+                                                >set -g allow-rename off</span
+                                            >
+                                        </td>
+                                        <td>
+                                            Prevent programs from renaming
+                                            windows
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
 
-    card.style.transform =
-      `rotateX(${rotateY}deg) rotateY(${rotateX}deg) scale(1.03)`;
-  });
+                    <div class="card" data-tags="advanced">
+                        <div class="card-header">
+                            Advanced &amp; Scripting
+                            <span class="tag-label">advanced</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux new-window -n &lt;name&gt;
+                                            "cmd"</span
+                                        >
+                                    </td>
+                                    <td>
+                                        Create window with a specific command
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux send-keys -t &lt;target&gt;
+                                            "cmd" Enter</span
+                                        >
+                                    </td>
+                                    <td>Send keystrokes to a pane</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux set-option -g @my_var
+                                            "value"</span
+                                        >
+                                    </td>
+                                    <td>Set a custom user variable</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux show-options -g</span
+                                        >
+                                    </td>
+                                    <td>List all global options</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux show-options -s</span
+                                        >
+                                    </td>
+                                    <td>List all session options</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux show-window-options</span
+                                        >
+                                    </td>
+                                    <td>List all window options</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux display-message "text"</span
+                                        >
+                                    </td>
+                                    <td>Show a message in status bar</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux run-shell "script.sh"</span
+                                        >
+                                    </td>
+                                    <td>Run a shell command in background</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux if-shell "cmd" "action"</span
+                                        >
+                                    </td>
+                                    <td>Conditional execution in config</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux bind-key &lt;key&gt;
+                                            &lt;cmd&gt;</span
+                                        >
+                                    </td>
+                                    <td>Create a custom keybinding</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux unbind-key &lt;key&gt;</span
+                                        >
+                                    </td>
+                                    <td>Remove a keybinding</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux list-keys</span
+                                        >
+                                    </td>
+                                    <td>List all keybindings</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="command"
+                                            >tmux source-file ~/.tmux.conf</span
+                                        >
+                                    </td>
+                                    <td>Reload tmux config</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  card.addEventListener("mouseleave", () => {
-    currentX = 0;
-    currentY = 0;
+                    <div class="back-top">
+                        <button
+                            onclick="
+                                document.querySelector('#tmuxSearch').focus();
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            "
+                        >
+                            Back to top ↑
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="hub-footer">
+            <span>CheatSheets &mdash; searchable, always free.</span>
+        </footer>
 
-    card.style.transform =
-      "rotateX(0deg) rotateY(0deg) scale(1)";
-  });
-</script>
-
-</body>
+        <script src="cheatsheet.js"></script>
+    </body>
 </html>
