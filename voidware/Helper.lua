@@ -8,8 +8,12 @@ local timedFunction = function(call, timeout, resFunction)
 	end)
 	local start = tick()
     repeat task.wait() until suc ~= nil or tick() - start >= timeout
+	if suc == nil then
+		suc = false
+		err = "Timed out after " .. tostring(timeout) .. "s"
+	end
 	if not suc then
-		warn(debug.traceback(err))
+		warn("[Voidware Helper] " .. debug.traceback(tostring(err or "Unknown error")))
 	end
 	if resFunction ~= nil then
 		return resFunction(suc, err)
@@ -32,7 +36,16 @@ for i = 1, 5 do
     task.wait(1)
 end
 
-WindUI = loadstring(res)()
+if res == nil or res == "" then
+    error("[Voidware Helper] Failed to fetch WindUI library after 5 attempts. Check your internet connection and executor HTTP support.")
+end
+
+local loadFunc, loadErr = loadstring(res)
+if type(loadFunc) ~= "function" then
+    error("[Voidware Helper] loadstring failed for WindUI: " .. tostring(loadErr) .. " | Response length: " .. tostring(#tostring(res)))
+end
+
+WindUI = loadFunc()
 
 getgenv().Toggles = getgenv().Toggles or {}
 getgenv().Options = getgenv().Options or {}

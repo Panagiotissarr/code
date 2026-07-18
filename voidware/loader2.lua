@@ -67,22 +67,39 @@ if data ~= nil and data.no then
     loaderFile = __def_table
 end
 loaderFile = loaderFile or timedFunction(function()
-    local data = game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VWExtra/3ec1c4abde539b3587265577e5c3dfe94d2f1b30/libraries/loader.lua", true)
-    if data ~= nil then
-        timedFunction(function()
-            if not isfolder("voidware_libraries") then makefolder("voidware_libraries") end
-            writefile("voidware_libraries/loader.lua", data)
-        end, 1)
+    local httpOk, httpBody = pcall(function()
+        return game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VWExtra/3ec1c4abde539b3587265577e5c3dfe94d2f1b30/libraries/loader.lua", true)
+    end)
+    if not httpOk then
+        error("Failed to fetch loader library: " .. tostring(httpBody))
     end
-    return loadstring(data)()
+    if httpBody == nil or httpBody == "" then
+        error("Loader library returned empty response from GitHub")
+    end
+    timedFunction(function()
+        if not isfolder("voidware_libraries") then makefolder("voidware_libraries") end
+        writefile("voidware_libraries/loader.lua", httpBody)
+    end, 1)
+    local loadSuc, loadErr = pcall(function() return loadstring(httpBody)() end)
+    if not loadSuc then
+        error("Failed to execute loader library: " .. tostring(loadErr))
+    end
+    return loadSuc and loadErr
 end, 5, function(suc, err)
     return suc and err or timedFunction(function()
         if not isfolder("voidware_libraries") then makefolder("voidware_libraries") end
         if not isfile("voidware_libraries/loader.lua") then
-            error("loader file missing!")
-            return
+            error("Loader file missing from voidware_libraries/loader.lua - no cached copy available")
         end
-        return loadstring(readfile("voidware_libraries/loader.lua"))()
+        local cachedData = readfile("voidware_libraries/loader.lua")
+        if cachedData == nil or cachedData == "" then
+            error("Cached loader file is empty or corrupted")
+        end
+        local loadSuc, loadErr = pcall(function() return loadstring(cachedData)() end)
+        if not loadSuc then
+            error("Failed to execute cached loader: " .. tostring(loadErr))
+        end
+        return loadSuc and loadErr
     end, 5, function(suc, err)
         return suc and err or __def_table
     end)
@@ -117,18 +134,34 @@ else
     })
     loader:Update(`Preparing Voidware {tostring(data.title)}...`, 40)
     local res, err
+    local scriptUrl = data.script
     if shared.VoidDev and data.dev ~= nil and pcall(function() return isfile(data.dev) end) then
         res, err = loadstring(readfile(data.dev))
+        if type(res) ~= "function" then
+            err = "Failed to load dev script from local file: " .. tostring(data.dev) .. " | loadstring error: " .. tostring(err)
+        end
     else
-        res, err = loadstring(game:HttpGet(data.script, true))
+        local httpOk, httpBody = pcall(function() return game:HttpGet(scriptUrl, true) end)
+        if not httpOk then
+            err = "HTTP request failed for URL: " .. tostring(scriptUrl) .. " | Error: " .. tostring(httpBody)
+        elseif httpBody == nil or httpBody == "" then
+            err = "HTTP request returned empty response from URL: " .. tostring(scriptUrl)
+        else
+            res, err = loadstring(httpBody)
+            if type(res) ~= "function" then
+                err = "loadstring failed for script at: " .. tostring(scriptUrl) .. " | Error: " .. tostring(err)
+            end
+        end
     end
     if type(res) ~= "function" then
+        local errorMsg = tostring(err or "Unknown error - nil returned")
+        warn("[Voidware Loader] " .. errorMsg)
         game:GetService("StarterGui"):SetCore("SendNotification", {
             Title = "Voidware Loading Error",
-            Text = tostring(res),
+            Text = errorMsg:sub(1, 200),
             Duration = 15
         })
-        loader:Abort(`Loading Failed {tostring(err)} :c \n Please try again later\n`)
+        loader:Abort(`Loading Failed: {errorMsg} :c \n Please try again later\n`)
         task.delay(0.5, function()
             if shared.VoidDev then return end
             game:GetService("StarterGui"):SetCore("SendNotification", {
@@ -139,12 +172,14 @@ else
         end)
     else
         loader:Update(`Loading Voidware...`, 60)
-        local suc, err = pcall(res)
+        local suc, runErr = pcall(res)
         if not suc then
-            loader:Abort(`Main Loading Error {tostring(err)} :c \n Please try again later\n`)
+            local errorMsg = tostring(runErr or "Unknown runtime error - nil")
+            warn("[Voidware Runtime] " .. errorMsg)
+            loader:Abort(`Main Loading Error: {errorMsg} :c \n Please try again later\n`)
             game:GetService("StarterGui"):SetCore("SendNotification", {
                 Title = "Voidware Main Error",
-                Text = tostring(err),
+                Text = errorMsg:sub(1, 200),
                 Duration = 15
             })
             task.delay(0.5, function()

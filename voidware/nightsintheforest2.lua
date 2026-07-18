@@ -173,5 +173,53 @@ task.spawn(function()
 end)
 
 local commit = shared.CustomCommit and tostring(shared.CustomCommit) or shared.StagingMode and "staging" or "7da6700e64d07a15c8327df690ebe81a18138513"
+local scriptUrl = "https://code.sarris.dev/voidware/"..tostring(commit).."/newnightsintheforest.lua"
 
-loadstring(game:HttpGet("https://code.sarris.dev/voidware/"..tostring(commit).."/newnightsintheforest.lua", true))()
+local httpOk, httpBody = pcall(function() return game:HttpGet(scriptUrl, true) end)
+if not httpOk then
+    pcall(function()
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Voidware | 99 Nights Error",
+            Text = "HTTP request failed: " .. tostring(httpBody) .. "\nURL: " .. scriptUrl,
+            Duration = 15
+        })
+    end)
+    warn("[Voidware] Failed to fetch script: " .. tostring(httpBody) .. " | URL: " .. scriptUrl)
+    return
+end
+if httpBody == nil or httpBody == "" then
+    pcall(function()
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Voidware | 99 Nights Error",
+            Text = "Script returned empty response\nURL: " .. scriptUrl,
+            Duration = 15
+        })
+    end)
+    warn("[Voidware] Empty response from: " .. scriptUrl)
+    return
+end
+
+local loadFunc, loadErr = loadstring(httpBody)
+if type(loadFunc) ~= "function" then
+    pcall(function()
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Voidware | 99 Nights Error",
+            Text = "loadstring failed: " .. tostring(loadErr) .. "\nURL: " .. scriptUrl,
+            Duration = 15
+        })
+    end)
+    warn("[Voidware] loadstring failed: " .. tostring(loadErr) .. " | URL: " .. scriptUrl)
+    return
+end
+
+local runOk, runErr = pcall(loadFunc)
+if not runOk then
+    pcall(function()
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Voidware | 99 Nights Runtime Error",
+            Text = tostring(runErr or "Unknown error"),
+            Duration = 15
+        })
+    end)
+    warn("[Voidware] Runtime error in 99 Nights script: " .. tostring(runErr))
+end
