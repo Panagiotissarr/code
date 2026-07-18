@@ -172,8 +172,7 @@ task.spawn(function()
     end)
 end)
 
-local commit = shared.CustomCommit and tostring(shared.CustomCommit) or shared.StagingMode and "staging" or "7da6700e64d07a15c8327df690ebe81a18138513"
-local scriptUrl = "https://code.sarris.dev/voidware/"..tostring(commit).."/newnightsintheforest.lua"
+local scriptUrl = "https://code.sarris.dev/voidware/newnightsintheforest.lua"
 
 local httpOk, httpBody = pcall(function() return game:HttpGet(scriptUrl, true) end)
 if not httpOk then
