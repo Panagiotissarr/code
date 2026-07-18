@@ -174,4 +174,4 @@ end)
 
 local commit = shared.CustomCommit and tostring(shared.CustomCommit) or shared.StagingMode and "staging" or "7da6700e64d07a15c8327df690ebe81a18138513"
 
-loadstring(game:HttpGet("https://code.sarris.dev/voidware"..tostring(commit).."/newnightsintheforest.lua", true))()
+loadstring(game:HttpGet("https://code.sarris.dev/voidware/"..tostring(commit).."/newnightsintheforest.lua", true))()

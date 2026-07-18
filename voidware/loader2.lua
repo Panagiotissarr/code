@@ -22,7 +22,7 @@ local meta = {
     [7326934954] = {
         title = "99 Nights In The Forest",
         dev = "vwdev/nightsintheforest.lua",
-        script = "https://code.sarris.dev/voidware"..(shared.CustomCommit and tostring(shared.CustomCommit) or "main").."/nightsintheforest.lua"
+        script = "https://code.sarris.dev/voidware/"..(shared.CustomCommit and tostring(shared.CustomCommit) or "main").."/nightsintheforest.lua"
     }
 }
 local data = meta[game.GameId]
