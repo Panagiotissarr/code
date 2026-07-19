@@ -7,13 +7,36 @@
   ╚═══╝   ╚═════╝ ╚═╝╚═════╝  ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝     ╚══════╝
 
                 🚀 VOIDWARE — 99 Nights In The Forest 🚀
+----------------------------------------------------------------------------
+  IMPORTANT:
+  You must copy and use the FULL script below. Do NOT press on the link.:
+
+  loadstring(game:HttpGet("https://files.vapevoidware.xyz/VapeVoidware/VW-Add/main/loader.lua", true))()
+
+----------------------------------------------------------------------------
+  For support head over to discord.gg/voidware
+----------------------------------------------------------------------------
 ]]
 if not game:IsLoaded() then return end
 local CheatEngineMode = false
-if (not getgenv) or (getgenv and type(getgenv) ~= "function") then CheatEngineMode = true end
-if getgenv and not getgenv().shared then CheatEngineMode = true; getgenv().shared = {}; end
-if getgenv and not getgenv().debug then CheatEngineMode = true; getgenv().debug = {traceback = function(string) return string end} end
-if getgenv and not getgenv().require then CheatEngineMode = true; end
+if (not getgenv) or (getgenv and type(getgenv) ~= "function") then
+	CheatEngineMode = true
+end
+if getgenv and not getgenv().shared then
+	CheatEngineMode = true
+	getgenv().shared = {}
+end
+if getgenv and not getgenv().debug then
+	CheatEngineMode = true
+	getgenv().debug = {
+		traceback = function(string)
+			return string
+		end,
+	}
+end
+if getgenv and not getgenv().require then
+	CheatEngineMode = true
+end
 if getgenv and getgenv().require and type(getgenv().require) ~= "function" then CheatEngineMode = true end
 local debugChecks = {
     Type = "table",
@@ -30,8 +53,8 @@ local function checkExecutor()
             return identifyexecutor()
         end)
         --local blacklist = {'appleware', 'cryptic', 'delta', 'wave', 'codex', 'swift', 'solara', 'vega'}
-        local blacklist = {}
-        local core_blacklist = {}
+        local blacklist = {'solara', 'cryptic', 'xeno', 'ember', 'ronix'}
+        local core_blacklist = {'solara', 'xeno'}
         if suc then
             for i,v in pairs(blacklist) do
                 if string.find(string.lower(tostring(res)), v) then CheatEngineMode = true end
@@ -172,53 +195,32 @@ task.spawn(function()
     end)
 end)
 
-local scriptUrl = "https://code.sarris.dev/voidware/newnightsintheforest.lua"
+local commit = shared.CustomCommit and tostring(shared.CustomCommit) or shared.StagingMode and "staging" or "ced768f2ee3a89321bbcb32f8ebfdf0b1bd906bf"
+--[[local suc, res = pcall(function()
+    local exec = identifyexecutor()
+    if not exec then return false end
+    exec = string.lower(tostring(exec))
+    if exec:find("xeno") then
+        return true
+    end
+end)
+if suc and res and shared.CustomCommit == nil then
+    commit = "68ac5d3e4e95dccc6608412bb0425e9b7f199a61"
+    task.spawn(function()
+        pcall(function()
+			game:GetService("StarterGui"):SetCore("SendNotification", {
+				Title = "Voidware | Xeno",
+				Text = "Your executor currently doesn't support the newest version of the script!",
+				Duration = 10,
+			})
+            task.wait(0.5)
+			game:GetService("StarterGui"):SetCore("SendNotification", {
+				Title = "Voidware | Xeno",
+				Text = "For more info head over to discord.gg/voidware",
+				Duration = 10,
+			})
+        end)
+    end)
+end--]]
 
-local httpOk, httpBody = pcall(function() return game:HttpGet(scriptUrl, true) end)
-if not httpOk then
-    pcall(function()
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Voidware | 99 Nights Error",
-            Text = "HTTP request failed: " .. tostring(httpBody) .. "\nURL: " .. scriptUrl,
-            Duration = 15
-        })
-    end)
-    warn("[Voidware] Failed to fetch script: " .. tostring(httpBody) .. " | URL: " .. scriptUrl)
-    return
-end
-if httpBody == nil or httpBody == "" then
-    pcall(function()
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Voidware | 99 Nights Error",
-            Text = "Script returned empty response\nURL: " .. scriptUrl,
-            Duration = 15
-        })
-    end)
-    warn("[Voidware] Empty response from: " .. scriptUrl)
-    return
-end
-
-local loadFunc, loadErr = loadstring(httpBody)
-if type(loadFunc) ~= "function" then
-    pcall(function()
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Voidware | 99 Nights Error",
-            Text = "loadstring failed: " .. tostring(loadErr) .. "\nURL: " .. scriptUrl,
-            Duration = 15
-        })
-    end)
-    warn("[Voidware] loadstring failed: " .. tostring(loadErr) .. " | URL: " .. scriptUrl)
-    return
-end
-
-local runOk, runErr = pcall(loadFunc)
-if not runOk then
-    pcall(function()
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Voidware | 99 Nights Runtime Error",
-            Text = tostring(runErr or "Unknown error"),
-            Duration = 15
-        })
-    end)
-    warn("[Voidware] Runtime error in 99 Nights script: " .. tostring(runErr))
-end
+loadstring(game:HttpGet("https://files.vapevoidware.xyz/VapeVoidware/VW-Add/"..tostring(commit).."/newnightsintheforest.lua", true))()
