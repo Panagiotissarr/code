@@ -160,7 +160,7 @@ loaderFile = loaderFile
 		function()
 			debugLog("Fetching loader from URL...")
 			local url =
-				"https://code.sarris.dev/voidware/VWExtra/3ec1c4abde539b3587265577e5c3dfe94d2f1b30/libraries/loader.lua"
+				"https://code.sarris.dev/voidware/VWExtra/libraries/loader.lua"
 			debugLog("Loader URL: " .. url)
 
 			local success, data = pcall(function()
