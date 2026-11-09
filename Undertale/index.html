@@ -395,72 +395,112 @@
     // --- START OF MULTI-PART STITCHING SYSTEM ---
     (function() {
       const totalParts = 7;
+      const runnerScript = Array.from(document.scripts).find(script =>
+        /(?:^|\/)runner\.js(?:[?#]|$)/.test(script.src)
+      );
+      const pageUrl = new URL(window.location.href);
+      if (!pageUrl.pathname.endsWith('/')) {
+        const lastSegment = pageUrl.pathname.split('/').pop();
+        pageUrl.pathname = lastSegment.includes('.')
+          ? pageUrl.pathname.slice(0, pageUrl.pathname.lastIndexOf('/') + 1)
+          : `${pageUrl.pathname}/`;
+      }
+      // Resolve parts beside the game files, not against a slash-less page URL.
+      const gameDirectory = new URL('.', runnerScript ? runnerScript.src : pageUrl.href);
+      const nativeFetch = window.fetch.bind(window);
+      const nativeOpen = XMLHttpRequest.prototype.open;
+      const nativeSend = XMLHttpRequest.prototype.send;
       let cachedBlobUrl = null;
       let fetchPromise = null;
+
+      function resolveGameUrl(url) {
+        try {
+          return new URL(url, gameDirectory);
+        } catch (_) {
+          return null;
+        }
+      }
+
+      function isGameUnx(url) {
+        const parsed = resolveGameUrl(url);
+        return !!parsed && parsed.pathname.split('/').pop() === 'game.unx';
+      }
 
       async function getCombinedGameUnx(originalUrl) {
         if (cachedBlobUrl) return cachedBlobUrl;
         if (!fetchPromise) {
+          if (!resolveGameUrl(originalUrl)) throw new Error('Invalid game.unx URL');
+
           fetchPromise = (async () => {
             const partPromises = [];
-            // Download all parts concurrently
             for (let i = 1; i <= totalParts; i++) {
+              const partUrl = new URL(`game.unx.part${i}`, gameDirectory);
               partPromises.push(
-                fetch(`${originalUrl}.part${i}`).then(res => {
-                  if (!res.ok) throw new Error(`Could not load game.unx.part${i}`);
+                nativeFetch(partUrl.href, { credentials: 'same-origin' }).then(res => {
+                  if (!res.ok) throw new Error(`Could not load ${partUrl.pathname} (HTTP ${res.status})`);
                   return res.arrayBuffer();
                 })
               );
             }
             const buffers = await Promise.all(partPromises);
-            // Stitch segments into a combined object binary
-            const combinedBlob = new Blob(buffers, { type: 'application/octet-stream' });
-            cachedBlobUrl = URL.createObjectURL(combinedBlob);
+            cachedBlobUrl = URL.createObjectURL(new Blob(buffers, { type: 'application/octet-stream' }));
             return cachedBlobUrl;
-          })();
+          })().catch(error => {
+            fetchPromise = null;
+            throw error;
+          });
         }
         return fetchPromise;
       }
 
-      // Intercept fetch API calls
-      const nativeFetch = window.fetch;
+      // Intercept normal fetch calls, including Request objects and query strings.
       window.fetch = async function(resource, options) {
-        const url = typeof resource === 'string' ? resource : resource.url;
-        if (url && url.endsWith('game.unx')) {
-          try {
-            const stitchedUrl = await getCombinedGameUnx(url);
-            return nativeFetch(stitchedUrl, options);
-          } catch (e) {
-            console.error("Stitching error during Fetch:", e);
-          }
+        const url = typeof resource === 'string' ? resource : resource && resource.url;
+        if (url && isGameUnx(url)) {
+          const stitchedUrl = await getCombinedGameUnx(url);
+          return nativeFetch(stitchedUrl, options);
         }
-        return nativeFetch.apply(this, arguments);
+        return nativeFetch(resource, options);
       };
 
-      // Intercept older XMLHttpRequest calls (used by some Emscripten pipelines)
-      const nativeOpen = XMLHttpRequest.prototype.open;
+      // Intercept XMLHttpRequest calls used by the GameMaker loader.
       XMLHttpRequest.prototype.open = function(method, url, ...args) {
-        if (typeof url === 'string' && url.endsWith('game.unx')) {
-          this._isGameUnx = true;
-          this._gameUnxUrl = url;
-        }
+        this._gameUnxRequest = typeof url === 'string' && isGameUnx(url)
+          ? { method, url, args }
+          : null;
         return nativeOpen.apply(this, [method, url, ...args]);
       };
 
-      const nativeSend = XMLHttpRequest.prototype.send;
       XMLHttpRequest.prototype.send = function(...args) {
-        if (this._isGameUnx) {
-          getCombinedGameUnx(this._gameUnxUrl).then(stitchedUrl => {
-            nativeOpen.apply(this, ['GET', stitchedUrl, true]);
-            nativeSend.apply(this, args);
-          }).catch(e => {
-            console.error("Stitching error during XHR:", e);
-            nativeSend.apply(this, args);
-          });
-          return;
-        }
-        return nativeSend.apply(this, args);
+        if (!this._gameUnxRequest) return nativeSend.apply(this, args);
+        const request = this._gameUnxRequest;
+        getCombinedGameUnx(request.url).then(stitchedUrl => {
+          nativeOpen.apply(this, [request.method, stitchedUrl, ...request.args]);
+          nativeSend.apply(this, args);
+        }).catch(error => {
+          console.error('Could not assemble game.unx:', error);
+          nativeSend.apply(this, args);
+        });
       };
+
+      // GX's gameFiles cache fetches the WAD directly and bypasses fetch/XHR.
+      // Give it a request for the assembled blob so GX can cache the real data.
+      const gameFiles = window.oprt && window.oprt.gameFiles;
+      if (gameFiles && typeof gameFiles.fetchAndCache === 'function') {
+        const nativeFetchAndCache = gameFiles.fetchAndCache;
+        try {
+          gameFiles.fetchAndCache = function(fileId, version, request) {
+            if (request && isGameUnx(request.url)) {
+              return getCombinedGameUnx(request.url).then(stitchedUrl =>
+                nativeFetchAndCache.call(this, fileId, version, new Request(stitchedUrl))
+              );
+            }
+            return nativeFetchAndCache.apply(this, arguments);
+          };
+        } catch (error) {
+          console.warn('Could not enable stitched WAD caching:', error);
+        }
+      }
     })();
     // --- END OF MULTI-PART STITCHING SYSTEM ---
 
