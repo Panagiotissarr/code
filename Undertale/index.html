@@ -435,12 +435,19 @@
             const partPromises = [];
             for (let i = 1; i <= totalParts; i++) {
               const partUrl = new URL(`game.unx.part${i}`, gameDirectory);
-              partPromises.push(
-                nativeFetch(partUrl.href, { credentials: 'same-origin' }).then(res => {
-                  if (!res.ok) throw new Error(`Could not load ${partUrl.pathname} (HTTP ${res.status})`);
-                  return res.arrayBuffer();
-                })
-              );
+              const fallbackUrl = `https://raw.githubusercontent.com/Panagiotissarr/code/main/Undertale/game.unx.part${i}`;
+              partPromises.push((async () => {
+                const localResponse = await nativeFetch(partUrl.href, { credentials: 'same-origin' });
+                if (localResponse.ok) return localResponse.arrayBuffer();
+
+                // Some CDN deployments omit these large split files. Fetch the
+                // committed parts directly from GitHub in that case.
+                const fallbackResponse = await nativeFetch(fallbackUrl, { mode: 'cors', credentials: 'omit' });
+                if (!fallbackResponse.ok) {
+                  throw new Error(`Could not load game.unx.part${i} (CDN HTTP ${localResponse.status}, fallback HTTP ${fallbackResponse.status})`);
+                }
+                return fallbackResponse.arrayBuffer();
+              })());
             }
             const buffers = await Promise.all(partPromises);
             cachedBlobUrl = URL.createObjectURL(new Blob(buffers, { type: 'application/octet-stream' }));
